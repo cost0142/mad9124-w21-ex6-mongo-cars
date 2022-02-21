@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const car = await Car.findById(req.params.id);
+    const car = await Car.findById(req.params.id).populate("owner");
     if (!car) {
       throw new Error("Resource not found");
     }
