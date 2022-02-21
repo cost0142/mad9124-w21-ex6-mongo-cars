@@ -1,4 +1,5 @@
 const express = require("express");
+const { format } = require("morgan");
 const Car = require("../models/Car");
 const router = express.Router();
 
@@ -10,7 +11,14 @@ router.get("/", async (req, res) => {
   });
 });
 
-router.post("/", async (req, res) => {});
+router.post("/", async (req, res) => {
+  let attributes = req.body.data.attributes;
+  delete attributes._id;
+  let newCar = new Car(attributes);
+  await newCar.save();
+
+  res.status(201).json({ data: formatResponseData("cars", newCar.toObject()) });
+});
 
 router.get("/:id", async (req, res) => {});
 
