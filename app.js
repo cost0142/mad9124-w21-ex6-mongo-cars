@@ -18,6 +18,8 @@ const app = express();
 app.use(morgan("tiny"));
 app.use(express.json());
 
+app.use("/api/cars", require("./routes/cars"));
+
 const port = process.env.PORT || 3030;
 app.listen(port, () =>
   console.log(`HTTP server listening on port ${port} ...`)
