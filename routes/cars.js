@@ -74,7 +74,15 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {});
+router.delete("/:id", async (req, res) => {
+  try {
+    const car = await Car.findByIdAndRemove(req.params.id);
+    if (!car) throw new Error("Resource not found");
+    res.json({ data: formatResponseData("cars", car.toObject()) });
+  } catch (error) {
+    sendResourceNotFound(req, res);
+  }
+});
 
 /**
  * Format the response data object according to JSON:API v1.0
