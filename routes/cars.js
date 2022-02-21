@@ -20,7 +20,18 @@ router.post("/", async (req, res) => {
   res.status(201).json({ data: formatResponseData("cars", newCar.toObject()) });
 });
 
-router.get("/:id", async (req, res) => {});
+router.get("/:id", async (req, res) => {
+  try {
+    const car = await Car.findById(req.params.id);
+    if (!car) {
+      throw new Error("Resource not found");
+    }
+
+    res.json({ data: formatResponseData("cars", car.toObject()) });
+  } catch (error) {
+    sendResourceNotFound(req, res);
+  }
+});
 
 router.patch("/:id", async (req, res) => {});
 
@@ -37,6 +48,18 @@ router.delete("/:id", async (req, res) => {});
 function formatResponseData(type, resource) {
   const { _id, ...attributes } = resource;
   return { type, id: _id, attributes };
+}
+
+function sendResourceNotFound(req, res) {
+  res.status(404).json({
+    errors: [
+      {
+        status: "404",
+        title: "Resource does not exist",
+        description: `We could not find a car with id: ${req.params.id}`,
+      },
+    ],
+  });
 }
 
 module.exports = router;
